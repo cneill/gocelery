@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/streadway/amqp"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 // AMQPCeleryBackend CeleryBackend for AMQP
@@ -45,7 +45,6 @@ func (b *AMQPCeleryBackend) Reconnect() {
 
 // GetResult retrieves result from AMQP queue
 func (b *AMQPCeleryBackend) GetResult(taskID string) (*ResultMessage, error) {
-
 	queueName := strings.Replace(taskID, "-", "", -1)
 
 	args := amqp.Table{"x-expires": int32(86400000)}
@@ -93,10 +92,9 @@ func (b *AMQPCeleryBackend) GetResult(taskID string) (*ResultMessage, error) {
 
 // SetResult sets result back to AMQP queue
 func (b *AMQPCeleryBackend) SetResult(taskID string, result *ResultMessage) error {
-
 	result.ID = taskID
 
-	//queueName := taskID
+	// queueName := taskID
 	queueName := strings.Replace(taskID, "-", "", -1)
 
 	// autodelete is automatically set to true by python
